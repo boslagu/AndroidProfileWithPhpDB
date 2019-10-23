@@ -1,0 +1,34 @@
+<?php
+	$dbhost ="localhost";
+	$dbuser ="id8665065_memel22";
+	$dbpass ="tottieko";
+	$dbname ="id8665065_android";
+	$username = $_POST["username"];
+	$password = md5($_POST["password"]);
+	$mysqli = new mysqli($dbhost , $dbuser, $dbpass, $dbname);
+	$string = 'success';
+	$response = array();
+	if($mysqli){
+			$result = mysqli_query($mysqli, "Select * from tbl_useraccess
+			where userName like '$username' and passWord like '$password'");
+		if(mysqli_num_rows($result) > 0){
+		    while($row = mysqli_fetch_assoc($result)){
+		      //  array_push($response, $row);
+		    $responce['success'] = 0;
+		    $response['message'] = "success";
+		    }
+		} else {
+		    $responce['success'] = 0;
+		    $response['message'] = "Account doesn't exist...!";
+		}
+	}else{
+		echo "Not Connected...!";
+	}
+	echo json_encode($response);
+	mysqli_close($mysqli);
+// 	$length = mysqli_num_rows($result);
+// 	for ($i = 0; $i < $length; $i++){
+// 	    echo $response[$i];
+// 	}
+	// where username like '$username' and password like '$password'
+?>
