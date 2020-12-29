@@ -17,7 +17,7 @@ public class ResumeActivity extends AppCompatActivity {
 
     public void loadMyResume(){
         myResume = findViewById(R.id.myResume);
-        myResume.fromAsset("myResume.pdf").load();
+        myResume.fromAsset("myNewResume.pdf").load();
     }
 
 }

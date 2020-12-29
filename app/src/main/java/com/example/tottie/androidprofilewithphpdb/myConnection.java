@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,6 +19,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Map;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class myConnection extends AsyncTask<String, String, String> {
 
@@ -35,33 +41,25 @@ public class myConnection extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String s) {
         myCollection = "";
-        int stringLenght = s.length();
-        String myArray[] = new String[stringLenght];
-        for (int i = 0; i < stringLenght; i++) {
-            myArray[i] = String.valueOf(s.charAt(i));
-        }
-        for (int x = 0; x < stringLenght; x++) {
-            if (String.valueOf(myArray[x]).equals("{") || String.valueOf(myArray[x]).equals("}")
-                    || String.valueOf(myArray[x]).equals("\"")) {
-                myCollection += "";
-            } else if (String.valueOf(myArray[x]).equals(":")) {
-                myCollection += ": ";
-            } else {
-                myCollection += myArray[x];
+            try {
+                JSONObject obj = new JSONObject(s);
+                myCollection =obj.getString("message");
+                Log.d("My App", obj.getString("message"));
+            } catch (Throwable t) {
+                Log.d("My App", "Could not parse malformed JSON: \"" + s + "\"");
             }
-        }
 //            if (dialog.dismiss()) {
-//        if (myCollection.equals("message: success")) {
+        if (myCollection.equals("success")) {
             Intent i = new Intent(context, HomeActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
             if (fileName.equals("signup.php")){
                 ((CreateAccountActivity)context).finish();
             }
-//        }else{
+        }else{
             dialog.setMessage(myCollection);
             dialog.show();
-//        }
+        }
 //            }
     }
 
@@ -92,7 +90,7 @@ public class myConnection extends AsyncTask<String, String, String> {
             user = voids[8];
             pass = voids[9];
         }
-        String constrng = "http://memel22.000webhostapp.com/android/"+fileName;//This is my webhost
+        String constrng = "https://memel22.000webhostapp.com/android/"+fileName;//This is my webhost
 //        String constrng = "http://192.168.100.9/"+fileName;//this is my localhost home
 //        String constrng = "http://192.168.8.101/androidConnection/"+fileName;//this is my localhost portable wifi
         try {
